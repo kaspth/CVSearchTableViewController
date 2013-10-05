@@ -9,7 +9,7 @@ Add the dependency to your `Podfile`:
 
 ```ruby
 platform :ios # or :osx
-pod 'CVPredicateFilter'
+pod 'CVSearchTableViewController'
 ...
 ```
 
