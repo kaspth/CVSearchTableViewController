@@ -92,9 +92,8 @@ NSString * const CVSearchTableViewControllerLoadDataNotification = @"CVSearchTab
 
 - (void)dismissWithObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.willDismissWithPickHandler)
-        self.willDismissWithPickHandler(object, indexPath);
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    if (!self.willDismissWithPickHandler || self.willDismissWithPickHandler(object, indexPath))
+        [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

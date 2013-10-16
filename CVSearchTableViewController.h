@@ -10,9 +10,10 @@
 ///@discussion Useful to set properties in a decoupled manner. The notification object is the search table view controller needing data. Set the objects on searchResultsDataSource here or get nothing to be shown.
 extern NSString * const CVSearchTableViewControllerLoadDataNotification;
 
-///@param Object The object for the cell the user selected.
+///@param object The object for the cell the user selected.
 ///@param indexPath The indexPath of the selected cell.
-typedef void(^CVSearchDismissBlock)(id object, NSIndexPath *indexPath);
+///@return YES if the searchTableViewController should dismiss, NO otherwise. The controller will dismiss by default.
+typedef BOOL(^CVSearchDismissBlock)(id object, NSIndexPath *indexPath);
 
 @interface CVSearchTableViewController : UITableViewController
 
@@ -36,9 +37,10 @@ typedef void(^CVSearchDismissBlock)(id object, NSIndexPath *indexPath);
 @property (nonatomic, strong) NSArray *searchData;
 
 ///@brief The predicate used for searching through searchData.
-///@discussion Use $searchTerm to reference the term to search for.
+///@discussion Use $searchTerm to reference the users search term.
 @property (nonatomic, strong) NSPredicate *searchPredicate;
 
+///@discussion The controller will dismiss if this is not set.
 @property (nonatomic, copy) CVSearchDismissBlock willDismissWithPickHandler;
 
 @end
