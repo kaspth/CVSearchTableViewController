@@ -4,7 +4,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CVTableViewArrayDataSource.h"
+#import "CVArrayTableViewController.h"
 
 ///@brief Posted when the view is loading.
 ///@discussion Useful to set properties in a decoupled manner. The notification object is the search table view controller needing data. Set the objects on searchResultsDataSource here or get nothing to be shown.
@@ -15,7 +15,7 @@ extern NSString * const CVSearchTableViewControllerLoadDataNotification;
 ///@return YES if the searchTableViewController should dismiss, NO otherwise. The controller will dismiss by default.
 typedef BOOL(^CVSearchDismissBlock)(id object, NSIndexPath *indexPath);
 
-@interface CVSearchTableViewController : UITableViewController
+@interface CVSearchTableViewController : CVArrayTableViewController
 
 /**
  @brief Configure the tableView via this.
@@ -31,7 +31,6 @@ typedef BOOL(^CVSearchDismissBlock)(id object, NSIndexPath *indexPath);
     hideHeadersForEmptySections - Set to YES.
     didSelectRowBlock - Use willDismissWithPickHandler.
  */
-@property (nonatomic, readonly) CVTableViewArrayDataSource *searchResultsDataSource;
 
 ///@brief The data to search through.
 @property (nonatomic, strong) NSArray *searchData;

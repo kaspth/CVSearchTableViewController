@@ -4,14 +4,11 @@
 //
 
 #import "CVSearchTableViewController.h"
-#import "CVTableViewArrayDataSource.h"
 #import "CVCompoundPredicateFilter.h"
 
 NSString * const CVSearchTableViewControllerLoadDataNotification = @"CVSearchTableViewControllerLoadDataNotification";
 
 @interface CVSearchTableViewController () <UISearchDisplayDelegate, UISearchBarDelegate>
-
-@property (nonatomic, strong) CVTableViewArrayDataSource *searchResultsDataSource;
 
 @property (nonatomic, strong) CVCompoundPredicateFilter *compoundPredicateFilter;
 
@@ -25,21 +22,20 @@ NSString * const CVSearchTableViewControllerLoadDataNotification = @"CVSearchTab
 
 - (void)viewDidLoad
 {
-    self.searchResultsDataSource = [[CVTableViewArrayDataSource alloc] initWithTableView:self.tableView];
-    self.searchResultsDataSource.hideHeadersForEmptySections = YES;
-    
+    self.hideHeadersForEmptySections = YES;
+
     [[NSNotificationCenter defaultCenter] postNotificationName:CVSearchTableViewControllerLoadDataNotification object:self];
-    
+
     __weak __typeof(self) weakSelf = self;
-    self.searchResultsDataSource.didSelectRowHandler = ^(NSIndexPath *indexPath, id object) {
+    self.didSelectRowHandler = ^(NSIndexPath *indexPath, id object) {
         [weakSelf dismissWithObject:object atIndexPath:indexPath];
     };
-    self.searchResultsDataSource.dequeueFromTableViewHandler = ^(UITableView *tableView) {
+    self.dequeueFromTableViewHandler = ^(UITableView *tableView) {
         return weakSelf.tableView;
     };
 
-    self.searchDisplayController.searchResultsDataSource = self.searchResultsDataSource;
-    self.searchDisplayController.searchResultsDelegate = self.searchResultsDataSource;
+    self.searchDisplayController.searchResultsDataSource = self;
+    self.searchDisplayController.searchResultsDelegate = self;
     self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
 }
 
@@ -56,10 +52,10 @@ NSString * const CVSearchTableViewControllerLoadDataNotification = @"CVSearchTab
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
     void (^completionHandler)(NSArray *filteredResults) = ^(NSArray *filteredResults) {
-        self.searchResultsDataSource.objects = filteredResults;
+        self.objects = filteredResults;
         [self.searchDisplayController.searchResultsTableView reloadData];
     };
-    
+
     NSString *firstCharacter = [searchString length] == 0 ? @"" : [searchString substringToIndex:1];
     if (self.previousSearchString && ![self.previousSearchString hasPrefix:firstCharacter])
         [self.compoundPredicateFilter popFiltersWithCompletionHandler:completionHandler];
@@ -68,16 +64,16 @@ NSString * const CVSearchTableViewControllerLoadDataNotification = @"CVSearchTab
         [self.compoundPredicateFilter popToFilterAtIndex:[self.compoundPredicateFilter.filters count] - difference withCompletionHandler:completionHandler];
     } else
         [self.compoundPredicateFilter pushFilterWithSubstitutionValues:@{ @"searchTerm": searchString } completionHandler:completionHandler];
-    
+
     self.previousSearchString = [searchString isEqualToString:@""] ? nil : searchString;
-    
+
     return NO; // pushFilter returns immediately, call -reloadData in completionHandler.
 }
 
 - (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller
 {
     [self.compoundPredicateFilter popFiltersWithCompletionHandler:^(NSArray *filteredResults) {
-        self.searchResultsDataSource.objects = filteredResults;
+        self.objects = filteredResults;
     }];
 }
 
