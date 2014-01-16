@@ -5,8 +5,9 @@
 
 #import "CVArrayTableViewController.h"
 
-///@param object The object for the cell the user selected.
-///@param indexPath The indexPath of the selected cell.
+///@brief called when controller is about to dismiss either from a search being canceled or a user selecting a row.
+///@param object The object for the cell the user selected or nil.
+///@param indexPath The indexPath of the selected cell or nil.
 ///@return YES if the searchTableViewController should dismiss, NO otherwise. The controller will dismiss by default.
 typedef BOOL(^CVSearchDismissBlock)(id object, NSIndexPath *indexPath);
 
@@ -33,6 +34,6 @@ typedef BOOL(^CVSearchDismissBlock)(id object, NSIndexPath *indexPath);
 @property (nonatomic, strong) NSPredicate *searchPredicate;
 
 ///@discussion The controller will dismiss if this is not set.
-@property (nonatomic, copy) CVSearchDismissBlock willDismissWithPickHandler;
+@property (nonatomic, copy) CVSearchDismissBlock shouldDismissHandler;
 
 @end
