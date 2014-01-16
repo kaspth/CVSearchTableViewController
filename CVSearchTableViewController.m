@@ -6,8 +6,6 @@
 #import "CVSearchTableViewController.h"
 #import "CVCompoundPredicateFilter.h"
 
-NSString * const CVSearchTableViewControllerLoadDataNotification = @"CVSearchTableViewControllerLoadDataNotification";
-
 @interface CVSearchTableViewController () <UISearchDisplayDelegate, UISearchBarDelegate>
 
 @property (nonatomic, strong) CVCompoundPredicateFilter *compoundPredicateFilter;
@@ -39,7 +37,7 @@ NSString * const CVSearchTableViewControllerLoadDataNotification = @"CVSearchTab
     };
 }
 
-#pragma mark - UIView
+#pragma mark - UIViewController
 
 - (void)viewDidLoad
 {
@@ -50,6 +48,8 @@ NSString * const CVSearchTableViewControllerLoadDataNotification = @"CVSearchTab
     self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
 
     self.objects = self.searchData;
+    if (!self.compoundPredicateFilter)
+        self.compoundPredicateFilter = [CVCompoundPredicateFilter compoundFilterWithSegmentedObjects:self.searchData templatePredicate:self.searchPredicate];
 }
 
 - (void)setSearchData:(NSArray *)searchData
@@ -60,7 +60,7 @@ NSString * const CVSearchTableViewControllerLoadDataNotification = @"CVSearchTab
     self.compoundPredicateFilter = [CVCompoundPredicateFilter compoundFilterWithSegmentedObjects:searchData templatePredicate:self.searchPredicate];
 }
 
-#pragma mark - UISearcDisplayDelegate
+#pragma mark - UISearchDisplayDelegate
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
