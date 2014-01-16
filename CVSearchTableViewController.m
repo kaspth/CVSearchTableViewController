@@ -18,25 +18,38 @@ NSString * const CVSearchTableViewControllerLoadDataNotification = @"CVSearchTab
 
 @implementation CVSearchTableViewController
 
+#pragma mark - CVArrayTableViewController
+
+- (BOOL)hideHeadersForEmptySections
+{
+    return YES;
+}
+
+- (CVTableViewRowAtIndexPathHandler)didSelectRowHandler
+{
+    return ^(NSIndexPath *indexPath, id object) {
+        [self dismissWithObject:object atIndexPath:indexPath];
+    };
+}
+
+- (CVDequeueFromTableViewHandler)dequeueFromTableViewHandler
+{
+    return ^(UITableView *tableView) {
+        return self.tableView;
+    };
+}
+
 #pragma mark - UIView
 
 - (void)viewDidLoad
 {
-    self.hideHeadersForEmptySections = YES;
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:CVSearchTableViewControllerLoadDataNotification object:self];
-
-    __weak __typeof(self) weakSelf = self;
-    self.didSelectRowHandler = ^(NSIndexPath *indexPath, id object) {
-        [weakSelf dismissWithObject:object atIndexPath:indexPath];
-    };
-    self.dequeueFromTableViewHandler = ^(UITableView *tableView) {
-        return weakSelf.tableView;
-    };
+    [super viewDidLoad];
 
     self.searchDisplayController.searchResultsDataSource = self;
     self.searchDisplayController.searchResultsDelegate = self;
     self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
+
+    self.objects = self.searchData;
 }
 
 - (void)setSearchData:(NSArray *)searchData
