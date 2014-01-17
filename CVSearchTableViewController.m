@@ -101,7 +101,7 @@
 
 - (void)dismissWithObject:(id)object atIndexPath:(NSIndexPath *)indexPath
 {
-    if (!self.willDismissWithPickHandler || self.willDismissWithPickHandler(object, indexPath))
+    if (!self.shouldDismissHandler || self.shouldDismissHandler(object, indexPath))
         [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
